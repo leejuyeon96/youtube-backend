@@ -12,5 +12,6 @@ public interface VideoDAO extends JpaRepository <Video, Integer> {
     @Query(value = "SELECT * FROM video WHERE channel_code = ?", nativeQuery = true)
     List<Video> findByChannelCode(int code);
 
-    @Query(value = "SELECT * FROM comment WHERE video")
+
+
 }

@@ -16,7 +16,7 @@ public class VideoCommentService {
     }
 
     public List<VideoComment> findByVideoCode(int code){
-        return dao.findByVideoCode(code)
+        return dao.findByVideoCode(code);
     }
     public VideoComment update(VideoComment vo) {
         VideoComment target = dao.findById(vo.getCommentCode()).orElse(null);
