@@ -8,46 +8,48 @@ import org.hibernate.annotations.DynamicInsert;
 
 import java.util.Date;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @DynamicInsert
 public class Video {
 
     @Id
-    @Column(name="VIDEO_CODE")
+    @Column(name="video_code")
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "videoSequence")
-    @SequenceGenerator(name = "videoSequence", sequenceName = "SEQ_VIDEO", allocationSize = 1)
+    @SequenceGenerator(name="videoSequence", sequenceName = "SEQ_VIDEO", allocationSize = 1)
     private int videoCode;
 
-    @Column(name = "VIDEO_TITLE")
+    @Column(name="video_title")
     private String videoTitle;
 
-    @Column(name = "VIDEO_DESC")
+    @Column(name="video_desc")
     private String videoDesc;
 
-    @Column(name = "VIDEO_DATE")
+    @Column(name="video_date")
     private Date videoDate;
 
-    @Column(name = "VIDEO_VIEWS")
+    @Column(name="video_views")
     private int videoViews;
 
-    @Column(name = "VIDEO_URL")
+    @Column(name="video_url")
     private String videoUrl;
 
-    @Column(name = "VIDEO_PHOTO")
+    @Column(name="video_photo")
     private String videoPhoto;
 
     @ManyToOne
-    @JoinColumn(name = "CATEGORY_CODE")
+    @JoinColumn(name="category_code")
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "CHANNEL_CODE")
+    @JoinColumn(name="channel_code")
     private Channel channel;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name="id")
     private Member member;
+
+
 }

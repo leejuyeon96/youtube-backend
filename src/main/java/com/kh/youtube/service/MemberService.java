@@ -8,35 +8,58 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 @Slf4j
+@Service
 public class MemberService {
 
     @Autowired
     private MemberDAO dao;
 
     public List<Member> showAll() {
-        return dao.findAll();  // SELECT * FROM MEMBER
+        return dao.findAll(); // SELECT * FROM MEMBER랑 같음
     }
+
     public Member show(String id) {
-        return dao.findById(id).orElse(null); // SELECT * FROM MEMBER WHERE id=?
+        return dao.findById(id).orElse(null); // SELECT * FROM MEMBER WHERE id=? 문법이 알아서 만들어지는 것임
     }
-    public Member create(Member member){
+
+    // INSERT INTO MEMBER(ID, PASSWORD, NAME, AUTHORITY)
+    // VALUES(?, ?, ?, 'ROLE_USER')
+    public Member create(Member member) {
         log.info("member : " + member);
-        return dao.save(member); // INSERT INTO MEMBER (ID, PASSWORD, NAME, AUTHORITY) VALUES(?,?,?, 'ROLE_USER')
+        return dao.save(member);
     }
+
+    // UPDATE MEMBER SET ID=?, PASSWORD=?, NAME=?, AUTHORITY=?
+    // WHERE ID=?
     public Member update(Member member) {
         Member target = dao.findById(member.getId()).orElse(null);
-        if(target!=null){
-            return dao.save(member); // 이미 데이터가 있는경우 수정, 없는경우 생성으로 작동한다. UPDATE MEMBER SET ID =?, PASSWORD=?, NAME=?, AUTHORITY=?
+        if(target!=null) { // 기존에있는 정보가 있냐 없냐
+            return dao.save(member);
         }
         return null;
     }
 
-    public Member delete(String id){
+    // DELETE FROM MEMBER WHERE ID=?
+    public Member delete(String id) {
         Member target = dao.findById(id).orElse(null);
-        dao.delete(target);  // DELETE FROM MEMBER WHERE ID=?
+        dao.delete(target);
         return target;
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

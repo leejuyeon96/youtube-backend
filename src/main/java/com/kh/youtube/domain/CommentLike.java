@@ -10,25 +10,27 @@ import java.util.Date;
 
 @Entity
 @Data
+//@Table(name="") //테이블명 오류날때 명시해줘서 오류 해결
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
 public class CommentLike {
 
     @Id
-    @Column(name = "COMM_LIKE_CODE")
+    @Column(name="comm_like_code")
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "commLikeSequence")
-    @SequenceGenerator(name = "commLikeSequence", sequenceName = "SEQ_COMMENT_LIKE", allocationSize = 1)
+    @SequenceGenerator(name="commLikeSequence", sequenceName = "SEQ_COMMENT_LIKE", allocationSize = 1)
     private int commLikeCode;
 
-    @Column(name = "COMM_LIKE_DATE")
+    @Column(name="comm_like_date")
     private Date commLikeDate;
 
     @ManyToOne
-    @JoinColumn(name = "COMMENT_CODE")
+    @JoinColumn(name="comment_code")
     private VideoComment comment;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name="id")
     private Member member;
+
 }

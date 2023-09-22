@@ -12,50 +12,52 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
 @Slf4j
+@RestController
 @RequestMapping("/api/*")
 public class MemberController {
 
     @Autowired
-    private MemberService memberService;
+    private MemberService service;
 
     @Autowired
-    private ChannelService channelService;
+    private ChannelService channelservice;
 
     @GetMapping("/user")
-    public ResponseEntity<List<Member>> showAll(){
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.showAll());
-
+    public ResponseEntity<List<Member>> showAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(service.showAll());
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<Member> show(@PathVariable String id){
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.show(id));
+    @GetMapping("/user/{id}") //내프로필보기 같은 곳에쓰임
+    public ResponseEntity<Member> show(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.show(id));
     }
 
     @PostMapping("/user")
-    public ResponseEntity<Member> create(@RequestBody Member member){
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.create(member));
+    public ResponseEntity<Member> create(@RequestBody Member member) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.create(member));
     }
 
     @PutMapping("/user")
-    public ResponseEntity<Member> update(@RequestBody Member member){
-        Member result = memberService.update(member);
-        if(result!=null){
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+    public ResponseEntity<Member> update(@RequestBody Member member) {
+        Member result = service.update(member);
+        if(result!=null) {
+            return ResponseEntity.status(HttpStatus.OK).body(service.update(member));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); //build()는 body null로 보내는거랑 같음
     }
+
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<Member> delete(@PathVariable String id){
-        log.info(id + "삭제 ~");
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.delete(id));
+    public ResponseEntity<Member> delete(@PathVariable String id) {
+        log.info("삭제~");
+        return ResponseEntity.status(HttpStatus.OK).body(service.delete(id));
     }
 
+    // SELECT * FROM channel WHERE id=?
+    // http://localhost:8080/user/channel?id=user1
     @GetMapping("/user/channel")
-    public ResponseEntity<List<Channel>> showMember(@RequestParam String id){
-        return ResponseEntity.status(HttpStatus.OK).body(channelService.showMember(id));
+    public ResponseEntity<List<Channel>> showMember(@RequestParam String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(channelservice.showMember(id));
     }
+
 }

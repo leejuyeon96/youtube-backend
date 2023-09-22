@@ -1,6 +1,7 @@
 package com.kh.youtube.controller;
 
 import com.kh.youtube.domain.Category;
+import com.kh.youtube.domain.Channel;
 import com.kh.youtube.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,55 +12,57 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/*")
+@CrossOrigin(origins = {"*"}, maxAge = 6000)
 public class CategoryController {
 
     @Autowired
-    public CategoryService service;
+    private CategoryService service;
 
     @GetMapping("/category")
     public ResponseEntity<List<Category>> showAll() {
-        try{
-        return ResponseEntity.status(HttpStatus.OK).body(service.showAll());
-    }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(service.showAll());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // build() = body(null)이랑 같음
         }
-}
+    }
 
     @GetMapping("/category/{id}")
-    public ResponseEntity<Category>show(@PathVariable int id){
-        try{
+    public ResponseEntity<Category> show(@PathVariable int id) {
+        try {
             return ResponseEntity.status(HttpStatus.OK).body(service.show(id));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
     @PostMapping("/category")
-    public ResponseEntity<Category>create(@RequestBody Category category){
-        try{
+    public ResponseEntity<Category> create(@RequestBody Category category) {
+        try {
             return ResponseEntity.status(HttpStatus.OK).body(service.create(category));
-
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
     @PutMapping("/category")
-    public ResponseEntity<Category>update(@RequestBody Category category){
-        try{
+    public ResponseEntity<Category> update(@RequestBody Category category) {
+        try {
             return ResponseEntity.status(HttpStatus.OK).body(service.update(category));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
     @DeleteMapping("/category/{id}")
-    public ResponseEntity<Category>delete(@PathVariable int id){
-        try{
+    public ResponseEntity<Category> delete(@PathVariable int id) {
+        try {
             return ResponseEntity.status(HttpStatus.OK).body(service.delete(id));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+
 
 }

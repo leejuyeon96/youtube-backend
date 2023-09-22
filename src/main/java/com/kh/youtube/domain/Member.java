@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.Date;
+
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@DynamicInsert //추가할때 자동으로 Default 값이 들어감
-@DynamicUpdate //수정할때 자동으로 Default 값이 들어감
+@AllArgsConstructor
+@DynamicInsert    //추가할때 디폴드값이 자동으로 들어감
 public class Member {
 
     @Id
@@ -28,4 +29,5 @@ public class Member {
 
     @Column
     private String authority;
+
 }

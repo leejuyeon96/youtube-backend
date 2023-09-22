@@ -8,33 +8,34 @@ import org.hibernate.annotations.DynamicInsert;
 
 import java.util.Date;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-@DynamicInsert
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@DynamicInsert //오라클SQL문에 디폴드값이 들어가면 넣어줘야됨
 public class Channel {
 
     @Id
-    @Column(name="CHANNEL_CODE")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seqChannel")
-    @SequenceGenerator(name = "seqChannel", sequenceName = "SEQ_CHANNEL", allocationSize = 1)
+    @Column(name="channel_code")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "channelSequence")
+    @SequenceGenerator(name="channelSequence", sequenceName = "SEQ_CHANNEL", allocationSize = 1)
     private int channelCode;
 
-    @Column(name="CHANNEL_NAME")
+    @Column(name="channel_name")
     private String channelName;
 
-    @Column(name="CHANNEL_PHOTO")
+    @Column(name="channel_photo")
     private String channelPhoto;
 
-    @Column(name="CHANNEL_DESC")
+    @Column(name="channel_desc")
     private String channelDesc;
 
-    @Column(name="CHANNEL_DATE")
+    @Column(name="channel_date")
     private Date channelDate;
 
-    @ManyToOne // Channel 엔티티와 Member 엔티티를 다대일 관계로 설정
+    @ManyToOne // Channel 엔티티과 Member 엔티티를 다대일 관계로 설정 //한 멤버가 여러 채널을 가지고 있음
     @JoinColumn(name="id")
     private Member member;
+
 
 }

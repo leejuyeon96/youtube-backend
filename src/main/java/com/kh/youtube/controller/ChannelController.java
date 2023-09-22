@@ -1,12 +1,10 @@
 package com.kh.youtube.controller;
 
-import com.kh.youtube.domain.Channel;
-import com.kh.youtube.domain.Member;
-import com.kh.youtube.domain.Subscribe;
-import com.kh.youtube.domain.Video;
+import com.kh.youtube.domain.*;
 import com.kh.youtube.service.ChannelService;
 import com.kh.youtube.service.SubscribeService;
 import com.kh.youtube.service.VideoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -21,45 +19,49 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/*")
 public class ChannelController {
-    
 
-    @Value("${spring.servlet.multipart.location")
+    @Value("${youtube.upload.path}") // application.properties에 있는 변수
     private String uploadPath;
 
-
-    //채널 수정 put http://localhost:8080/api/channel
-    //채널 삭제 delete http://localhost:8080/api/channel/1
-    //내가 구독한 채널 조회 get http://localhost:8080/api/subscribe/user1
-    //채널 구독 post http://localhost:8080/api/subscribe
-    //채널 구독 취소  delete http://localhost:8080/api/subscribe/1
     @Autowired
     private ChannelService channel;
 
     @Autowired
     private VideoService video;
+
     @Autowired
     private SubscribeService subscribe;
 
-    //채널 조회 get http://localhost:8080/api/channel/1
+    //채널 조회 : GET - http://localhost:8080/api/channel/1
     @GetMapping("/channel/{id}")
-    public ResponseEntity<Channel> showChannel(@PathVariable int id){
+    public ResponseEntity<Channel> showChannel(@PathVariable int id) {
         return ResponseEntity.status(HttpStatus.OK).body(channel.show(id));
     }
-    //채널에 있는 영상 조회 get http://localhost:8080/api/channel/1/video
+
+    //채널에 있는 영상 조회 : GET - http://localhost:8080/api/channel/1/video
     @GetMapping("/channel/{id}/video")
-    public ResponseEntity<List<Video>> channelVideoList(@PathVariable int id){
+    public ResponseEntity<List<Video>> channelVideoList(@PathVariable int id) {
+        // SELECT * FROM video WHERE channel_code=? -VideoDAO에 삽입함
         return ResponseEntity.status(HttpStatus.OK).body(video.findByChannelCode(id));
     }
-    //채널 추가 post http://localhost:8080/api/channel
+
+    //채널 추가 : POST -  http://localhost:8080/api/channel
     @PostMapping("/channel")
-    public ResponseEntity<Channel> createChannel(MultipartFile photo, String name, String desc){
+    public ResponseEntity<Channel> createChannel(MultipartFile photo, String name, String desc) {
+        log.info("name : " + name);
+        log.info("desc : " + desc );
+        log.info("photo : " + photo);
+
         String originalPhoto = photo.getOriginalFilename();
-        String filePhoto = originalPhoto.substring(originalPhoto.lastIndexOf("\\")+1);
+        String realPhoto = originalPhoto.substring(originalPhoto.lastIndexOf("\\")+1);
+
         String uuid = UUID.randomUUID().toString();
-        String savePhoto = uploadPath + File.separator + uuid + "_" + filePhoto;
+
+        String savePhoto = uploadPath + File.separator + uuid + "_" + realPhoto; //실제저장할savePhoto
         Path pathPhoto = Paths.get(savePhoto);
 
         try {
@@ -67,46 +69,48 @@ public class ChannelController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //파일업로드가 끝났으니 경로 savePhoto, name, desc, memberId(id)
 
+        // 파일 업로드가 끝났으니 경로 (savePhoto), name, desc, memberId (id)
         Channel vo = new Channel();
-        vo.setChannelPhoto(savePhoto);
+        vo.setChannelPhoto(uuid + "_" + realPhoto);
         vo.setChannelName(name);
         vo.setChannelDesc(desc);
         Member member = new Member();
         member.setId("user1");
         vo.setMember(member);
 
-
-        ///return ResponseEntity.status(HttpStatus.OK).build();
+        //return ResponseEntity.status(HttpStatus.OK).build();
         return ResponseEntity.status(HttpStatus.OK).body(channel.create(vo));
-
     }
+
+    //채널 수정 : PUT - http://localhost:8080/api/channel
     @PutMapping("/channel")
-    public ResponseEntity<Channel> updateChannel(@RequestBody Channel vo){
+    public ResponseEntity<Channel> updateChannel(@RequestBody Channel vo) {
         return ResponseEntity.status(HttpStatus.OK).body(channel.update(vo));
-
     }
 
+    //채널 삭제 : DELETE - http://localhost:8080/api/channel/1
     @DeleteMapping("/channel/{id}")
-    public ResponseEntity<Channel> deleteChannel(@PathVariable int id){
+    public ResponseEntity<Channel> deleteChannel(@PathVariable int id) {
         return ResponseEntity.status(HttpStatus.OK).body(channel.delete(id));
     }
 
+    //내가 구독한 채널 조회 : GET - http://localhost:8080/api/subscribe/user1
     @GetMapping("/subscribe/{user}")
-    public ResponseEntity<List<Subscribe>> subscribeList(@PathVariable String user){
+    public ResponseEntity<List<Subscribe>> subscribeList(@PathVariable String user) {
         return ResponseEntity.status(HttpStatus.OK).body(subscribe.findByMemberId(user));
-}
+    }
 
+    //채널 구독 : POST - http://localhost:8080/api/subscribe
     @PostMapping("/subscribe")
-    public ResponseEntity<Subscribe> createsubscribeList(@RequestBody Subscribe vo){
+    public ResponseEntity<Subscribe> createSubscribe(@RequestBody Subscribe vo) {
         return ResponseEntity.status(HttpStatus.OK).body(subscribe.create(vo));
     }
 
+    //채널 구독 취소 : DELETE - http://localhost:8080/api/subscribe/1
     @DeleteMapping("/subscribe/{id}")
-    public ResponseEntity<Subscribe> deletesubscribeList(@PathVariable int id){
+    public ResponseEntity<Subscribe> deleteSubscribe(@PathVariable int id) {
         return ResponseEntity.status(HttpStatus.OK).body(subscribe.delete(id));
     }
-
 
 }
